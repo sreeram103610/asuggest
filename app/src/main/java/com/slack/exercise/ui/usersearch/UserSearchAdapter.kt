@@ -1,13 +1,14 @@
 package com.slack.exercise.ui.usersearch
 
+import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.slack.exercise.R
+import com.slack.exercise.databinding.ItemUserSearchBinding
 import com.slack.exercise.model.UserSearchResult
-import kotlinx.android.synthetic.main.item_user_search.view.username
 
 /**
  * Adapter for the list of [UserSearchResult].
@@ -21,7 +22,7 @@ class UserSearchAdapter : RecyclerView.Adapter<UserSearchAdapter.UserSearchViewH
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserSearchViewHolder {
-    val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user_search, parent, false)
+    val view = ItemUserSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     return UserSearchViewHolder(view)
   }
 
@@ -33,7 +34,8 @@ class UserSearchAdapter : RecyclerView.Adapter<UserSearchAdapter.UserSearchViewH
     holder.username.text = userSearchResults[position].username
   }
 
-  class UserSearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val username: TextView = itemView.username
+  class UserSearchViewHolder(binding: ItemUserSearchBinding) : RecyclerView.ViewHolder(binding.root) {
+
+    val username: TextView = binding.username
   }
 }
