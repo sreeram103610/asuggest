@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.slack.autocomplete"
         minSdkVersion 23
@@ -24,8 +24,8 @@ android {
         buildConfigField("String", "SLACK_BASE_URL", "\"https://mobile-code-exercise-a7fb88c7afa6.herokuapp.com\"")
     }
     compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding = true
@@ -33,11 +33,6 @@ android {
     namespace 'com.slack.exercise'
 }
 
-tasks.withType(KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
