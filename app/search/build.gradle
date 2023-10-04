@@ -1,41 +1,35 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
 
 android {
+    namespace 'com.slack.exercise.search'
     compileSdk 33
+
     defaultConfig {
-        applicationId "com.slack.autocomplete"
-        minSdkVersion 23
-        targetSdkVersion 33
-        versionCode 1
-        versionName "1.0"
+        minSdk 23
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
+
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    defaultConfig {
-        buildConfigField("String", "SLACK_BASE_URL", "\"https://mobile-code-exercise-a7fb88c7afa6.herokuapp.com\"")
-    }
     compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
     buildFeatures {
         viewBinding = true
-    }
-    namespace 'com.slack.exercise'
-}
-
-tasks.withType(KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
 }
 
@@ -48,12 +42,11 @@ dependencies {
     implementation "io.reactivex.rxjava3:rxandroid:${versions.rxAndroid}"
     implementation "com.jakewharton.timber:timber:${versions.timber}"
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:${versions.retrofit}"
-    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-
     implementation "com.squareup.moshi:moshi-kotlin:${versions.moshi}"
     implementation "com.squareup.retrofit2:converter-moshi:${versions.moshiconv}"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:${versions.retrofit}"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
 
     implementation "com.google.dagger:dagger:${versions.dagger}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
@@ -63,6 +56,4 @@ dependencies {
     testImplementation "junit:junit:${versions.junit}"
     androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
-
-    implementation project(":app:search")
 }
