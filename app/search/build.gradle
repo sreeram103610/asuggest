@@ -47,6 +47,7 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava3:${versions.retrofit}"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
     implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+    implementation "org.apache.commons:commons-collections4:${versions.apache}"
 
     implementation "com.google.dagger:dagger:${versions.dagger}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
