@@ -1,21 +1,25 @@
 package com.slack.exercise.search.data.api
 
+import com.slack.exercise.search.data.model.DataResult
+import com.slack.exercise.search.data.model.ErrorResponse
+import com.slack.exercise.search.data.model.UserDto
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Implementation of [DefaultSlackSearchClient] using [SlackSearchApi] to perform the API requests.
  */
 internal class DefaultSlackSearchClient @Inject constructor(val service: SlackSearchApi) : SlackSearchClient {
 
-  override fun searchUsers(searchTerm: String): Single<List<User>> {
-    return service.searchUsers(searchTerm)
-        .map {
-          it.users
-        }
-        .subscribeOn(Schedulers.io())
-
+  override suspend fun searchUsers(searchTerm: String): DataResult<List<UserDto>, ErrorResponse> {
+    return service.searchUsers(searchTerm).let {
+        if (it.isSuccessful) {
+            DataResult.Success(it.body()?.userDtos ?: emptyList())
+        } else
+            DataResult.Error(ErrorResponse.ServerError)
+    }
   }
 }
