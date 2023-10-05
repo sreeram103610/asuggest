@@ -5,10 +5,12 @@ import com.slack.exercise.search.data.api.SlackSearchClient
 import com.slack.exercise.search.data.api.DefaultSlackSearchClient
 import com.slack.exercise.search.data.api.BlockedPhrasesFileApi
 import com.slack.exercise.search.data.api.SlackSearchApi
+import com.slack.exercise.search.data.model.UserDto
 import com.slack.exercise.search.data.repo.BlockedPhrasesRepo
 import com.slack.exercise.search.data.repo.DefaultBlockedPhrasesRepo
 import com.slack.exercise.search.data.repo.DefaultSearchRepo
 import com.slack.exercise.search.data.repo.SearchRepo
+import com.slack.exercise.search.data.util.SearchCache
 import com.slack.exercise.search.domain.dataprovider.UserSearchResultDataProvider
 import com.slack.exercise.search.domain.dataprovider.UserSearchResultDataProviderImpl
 import com.slack.exercise.search.ui.usersearch.UserSearchFragment
@@ -16,9 +18,11 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
+import io.github.reactivecircus.cache4k.Cache
 import retrofit2.Retrofit
 import javax.inject.Scope
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.minutes
 
 @Module(includes = [DomainModule::class, SearchModule.Provider::class])
 abstract class SearchModule {
@@ -34,6 +38,9 @@ abstract class SearchModule {
         fun provideSlackSearchApi(retrofit: Retrofit): SlackSearchApi =
             retrofit.create(SlackSearchApi::class.java)
 
+        @Singleton
+        @Provides
+        fun provideOfflineCache() : SearchCache = SearchCache
     }
 
     @Singleton

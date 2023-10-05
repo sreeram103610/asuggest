@@ -19,7 +19,8 @@ buildscript {
             moshi           : '1.14.0',
             moshiconv       : '2.4.0',
             apache          : '4.4',
-            ktx             : '1.12.0'
+            ktx             : '1.12.0',
+            cache           : '0.11.0'
     ]
     repositories {
         google()

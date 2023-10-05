@@ -55,6 +55,7 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:${versions.dagger}"
 
     implementation "androidx.core:core-ktx:${versions.ktx}"
+    implementation "io.github.reactivecircus.cache4k:cache4k:${versions.cache}"
 
     testImplementation "junit:junit:${versions.junit}"
     androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
