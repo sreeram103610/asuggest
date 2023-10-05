@@ -1,4 +1,4 @@
-package com.slack.exercise.search.model
+package com.slack.exercise.search.domain.model
 
 import com.slack.exercise.search.data.model.UserDto
 
