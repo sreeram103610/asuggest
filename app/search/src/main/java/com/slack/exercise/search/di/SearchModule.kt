@@ -10,6 +10,7 @@ import com.slack.exercise.search.data.repo.BlockedPhrasesRepo
 import com.slack.exercise.search.data.repo.DefaultBlockedPhrasesRepo
 import com.slack.exercise.search.data.repo.DefaultSearchRepo
 import com.slack.exercise.search.data.repo.SearchRepo
+import com.slack.exercise.search.data.util.DefaultSearchCache
 import com.slack.exercise.search.data.util.SearchCache
 import com.slack.exercise.search.domain.dataprovider.UserSearchResultDataProvider
 import com.slack.exercise.search.domain.dataprovider.UserSearchResultDataProviderImpl
@@ -40,7 +41,7 @@ abstract class SearchModule {
 
         @Singleton
         @Provides
-        fun provideOfflineCache() : SearchCache = SearchCache
+        fun provideOfflineCache() : SearchCache = DefaultSearchCache
     }
 
     @Singleton

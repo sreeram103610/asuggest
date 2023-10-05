@@ -17,11 +17,14 @@ interface UserSearchContract {
      */
     fun onUserSearchResults(results: List<UserSearchResult>)
 
+    /**
+     * Call when a loading screen is to be displayed
+     */
     fun onUserSearchLoading()
     /**
      * Call when an error occurs during the execution of search queries.
      */
-    fun onUserSearchError(error: Throwable)
+    fun onUserSearchError(error: String)
   }
 
   interface Presenter {

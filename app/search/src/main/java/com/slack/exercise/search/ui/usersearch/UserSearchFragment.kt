@@ -84,10 +84,10 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     userSearchBinding.userSearchResultList.visibility = View.GONE
   }
 
-  override fun onUserSearchError(error: Throwable) {
+  override fun onUserSearchError(error: String) {
     userSearchBinding.progressBar.hide()
     userSearchBinding.userSearchResultList.visibility = View.GONE
-    Timber.e(error, "Error searching users.")
+    Timber.e("Error searching users.")
   }
 
   private fun setUpToolbar() {

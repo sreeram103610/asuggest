@@ -30,7 +30,7 @@ internal class DefaultSearchRepo @Inject constructor(private val client: SlackSe
                         client.searchUsers(key).let {
                             when (it) {
                                 is DataResult.Success -> it.data.let { userDtoList ->
-                                    cache.addUsers(userDtoList)
+                                    cache.addUsers(userDtoList, key)
                                     RepoResult.Available(userDtoList.toSet())
                                 }
 
