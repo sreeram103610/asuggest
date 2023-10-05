@@ -1,47 +1,54 @@
 package com.slack.exercise.search.ui.usersearch
 
-import com.slack.exercise.search.dataprovider.UserSearchResultDataProvider
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.subjects.PublishSubject
+import com.slack.exercise.search.domain.dataprovider.UserSearchResultDataProvider
+import com.slack.exercise.search.domain.usecase.DomainResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Presenter responsible for reacting to user inputs and initiating search queries.
  */
 class UserSearchPresenter @Inject constructor(
-    private val userNameResultDataProvider: com.slack.exercise.search.dataprovider.UserSearchResultDataProvider
+    private val userNameResultDataProvider: UserSearchResultDataProvider
 ) : UserSearchContract.Presenter {
 
   private var view: UserSearchContract.View? = null
-  private val searchQuerySubject = PublishSubject.create<String>()
-  private var searchQueryDisposable = Disposable.disposed()
+    private val scope = CoroutineScope(Dispatchers.IO)
+    private val searchFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
 
   override fun attach(view: UserSearchContract.View) {
     this.view = view
+      scope.launch {
+          searchFlow.flatMapLatest { userNameResultDataProvider.fetchUsers(it) }
+              .collect {
+                  withContext(Dispatchers.Main) {
+                      when (it) {
+                          is DomainResult.Error -> this@UserSearchPresenter.view?.onUserSearchError(Throwable()
+                          )
 
-    searchQueryDisposable = searchQuerySubject
-        .flatMapSingle { searchTerm ->
-          if (searchTerm.isEmpty()) {
-            Single.just(emptySet())
-          } else {
-            userNameResultDataProvider.fetchUsers(searchTerm)
-          }
-        }
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(
-            { results -> this@UserSearchPresenter.view?.onUserSearchResults(results) },
-            { error -> this@UserSearchPresenter.view?.onUserSearchError(error) }
-        )
+                          is DomainResult.Loaded -> this@UserSearchPresenter.view?.onUserSearchResults(
+                              it.data
+                          )
+
+                          DomainResult.Loading -> this@UserSearchPresenter.view?.onUserSearchLoading()
+                      }
+                  }
+              }
+      }
   }
 
   override fun detach() {
     view = null
-    searchQueryDisposable.dispose()
+    scope.cancel()
   }
 
   override fun onQueryTextChange(searchTerm: String) {
-    searchQuerySubject.onNext(searchTerm)
+      searchFlow.tryEmit(searchTerm)
   }
 }
