@@ -16,29 +16,38 @@ object DefaultSearchCache : SearchCache{
     private val searchTrie = PatriciaTrie<HashSet<UserDto>>()
 
     override fun addUser(userDto: UserDto, searchTerm: String) {
-        searchTrie.getOrElse(userDto.displayName) {
+        searchTrie.getOrElse(userDto.displayName.lowercase()) {
             hashSetOf(userDto)
         }.let {
-            searchTrie[userDto.displayName] = it.apply { add(userDto) }
-            searchTrie[userDto.username] = it.apply { add(userDto) }
-            cache.put(userDto, searchTerm)
+            searchTrie[userDto.displayName.lowercase()] = it.apply { add(userDto) }
+            searchTrie[userDto.username.lowercase()] = it.apply { add(userDto) }
+            cache.put(userDto, searchTerm.lowercase())
         }
     }
 
-    override fun searchUsers(prefixKey: String) : Set<UserDto> {
-        // Check if entries in the cache exists and that the cached entry is not a subset of the searchTerm's entries.
-        val (validEntries, invalidEntries) = searchTrie.prefixMap(prefixKey).values.flatten().partition { cache.get(it).let { searchPhrase -> searchPhrase != null && searchPhrase.length <= prefixKey.length }  }
+    override fun searchUsers(searchPhrase: String) : Set<UserDto> {
+        // Check if entries in the cache exists and that you return from cache if the search is not broader and if it is additive. eg: don't return entries for "fa" if the searchPhrase is "f".
+        val (validEntries, invalidEntries) = searchTrie.prefixMap(searchPhrase.lowercase()).values.flatten().partition { cache.get(it).let { cachedSearchPhrase -> cachedSearchPhrase != null && searchPhrase.startsWith(cachedSearchPhrase) }  }
         removeUsers(invalidEntries)
         return validEntries.toSet()
     }
 
     override fun addUsers(userDtoList: List<UserDto>, key: String) {
-        userDtoList.forEach { addUser(it, key) }
+        userDtoList.forEach { addUser(it, key.lowercase()) }
     }
 
-    private fun removeUsers(list: List<UserDto>) = list.forEach {
-        searchTrie.remove(it.displayName)
-        searchTrie.remove(it.username)
+    private fun removeUsers(list: List<UserDto>) = list.forEach {userDto ->
+        searchTrie[userDto.displayName.lowercase()]?.remove(userDto)
+        searchTrie[userDto.username.lowercase()]?.remove(userDto)
+
+        if (searchTrie[userDto.displayName.lowercase()]?.isEmpty() == true) {
+            searchTrie.remove(userDto.displayName.lowercase())
+        }
+
+        if (searchTrie[userDto.username.lowercase()]?.isEmpty() == true) {
+            searchTrie.remove(userDto.username.lowercase())
+        }
+        cache.invalidate(userDto)
     }
 
 }
