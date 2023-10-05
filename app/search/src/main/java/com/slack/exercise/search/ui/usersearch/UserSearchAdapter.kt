@@ -1,13 +1,11 @@
 package com.slack.exercise.search.ui.usersearch
 
-import android.text.Layout
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.slack.exercise.search.databinding.ItemUserSearchBinding
-import com.slack.exercise.search.model.UserSearchResult
+import com.slack.exercise.search.domain.model.UserSearchResult
 
 /**
  * Adapter for the list of [UserSearchResult].
@@ -15,8 +13,8 @@ import com.slack.exercise.search.model.UserSearchResult
 class UserSearchAdapter : RecyclerView.Adapter<UserSearchAdapter.UserSearchViewHolder>() {
   private var userSearchResults: List<UserSearchResult> = emptyList()
 
-  fun setResults(results: Set<UserSearchResult>) {
-    userSearchResults = results.toList()
+  fun setResults(results: List<UserSearchResult>) {
+    userSearchResults = results
     notifyDataSetChanged()
   }
 

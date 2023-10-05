@@ -1,6 +1,7 @@
 package com.slack.exercise.search.ui.usersearch
 
-import com.slack.exercise.search.model.UserSearchResult
+import com.slack.exercise.search.domain.model.UserSearchResult
+
 
 /**
  * MVP contract for User Search.
@@ -14,8 +15,9 @@ interface UserSearchContract {
     /**
      * Call when [UserSearchResult] are returned.
      */
-    fun onUserSearchResults(results: Set<com.slack.exercise.search.model.UserSearchResult>)
+    fun onUserSearchResults(results: List<UserSearchResult>)
 
+    fun onUserSearchLoading()
     /**
      * Call when an error occurs during the execution of search queries.
      */

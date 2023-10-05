@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.slack.exercise.search.R
 import com.slack.exercise.search.databinding.FragmentUserSearchBinding
+import com.slack.exercise.search.domain.model.UserSearchResult
 import dagger.android.support.DaggerFragment
 import timber.log.Timber
 import javax.inject.Inject
@@ -70,12 +71,22 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     })
   }
 
-  override fun onUserSearchResults(results: Set<com.slack.exercise.search.model.UserSearchResult>) {
+  override fun onUserSearchResults(results: List<UserSearchResult>) {
+    userSearchBinding.progressBar.hide()
+    userSearchBinding.userSearchResultList.visibility = View.VISIBLE
+
     val adapter = userSearchBinding.userSearchResultList.adapter as UserSearchAdapter
     adapter.setResults(results)
   }
 
+  override fun onUserSearchLoading() {
+    userSearchBinding.progressBar.show()
+    userSearchBinding.userSearchResultList.visibility = View.GONE
+  }
+
   override fun onUserSearchError(error: Throwable) {
+    userSearchBinding.progressBar.hide()
+    userSearchBinding.userSearchResultList.visibility = View.GONE
     Timber.e(error, "Error searching users.")
   }
 
