@@ -22,7 +22,6 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import javax.inject.Named
@@ -48,7 +47,6 @@ abstract class AppModule {
         .baseUrl(BuildConfig.SLACK_BASE_URL)
         .client(client)
         .addConverterFactory(MoshiConverterFactory.create())
-        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
 
     @Provides

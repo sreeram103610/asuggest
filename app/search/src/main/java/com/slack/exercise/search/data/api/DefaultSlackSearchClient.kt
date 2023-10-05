@@ -3,10 +3,6 @@ package com.slack.exercise.search.data.api
 import com.slack.exercise.search.data.model.DataResult
 import com.slack.exercise.search.data.model.ErrorResponse
 import com.slack.exercise.search.data.model.UserDto
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.flow.Flow
-import retrofit2.Response
 import javax.inject.Inject
 
 /**

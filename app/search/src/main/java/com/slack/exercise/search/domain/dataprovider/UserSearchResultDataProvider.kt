@@ -1,8 +1,7 @@
 package com.slack.exercise.search.domain.dataprovider
 
 import com.slack.exercise.search.domain.model.UserSearchResult
-import com.slack.exercise.search.domain.usecase.DomainResult
-import io.reactivex.rxjava3.core.Single
+import com.slack.exercise.search.domain.model.DomainResult
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserSearchResultDataProvider {
 
   /**
-   * Returns a [Single] emitting a set of [UserSearchResult].
+   * Returns a [FLow] emitting a list of [UserSearchResult] if successful.
    */
   fun fetchUsers(searchTerm: String): Flow<DomainResult<List<UserSearchResult>>>  // TODO: Change to domain result
 }
