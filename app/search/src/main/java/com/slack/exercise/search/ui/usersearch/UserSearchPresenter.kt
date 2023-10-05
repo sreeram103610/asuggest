@@ -37,7 +37,9 @@ class UserSearchPresenter @Inject constructor(
         }
         scope.launch {
             searchFlow.debounce(250.milliseconds)
-                .flatMapLatest { searchTerm -> userSearchResultDataProvider.fetchUsers(searchTerm).map { Pair(searchTerm, it) } }
+                .flatMapLatest { searchTerm ->
+                    userSearchResultDataProvider.fetchUsers(searchTerm).map { Pair(searchTerm, it) }
+                }
                 .collect {
                     lastState = UserSearchContract.UiState(it.first, it.second)
                     withContext(Dispatchers.Main) {

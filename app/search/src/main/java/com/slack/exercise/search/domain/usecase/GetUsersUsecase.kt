@@ -18,7 +18,10 @@ interface GetUsersUsecase {
     operator fun invoke(searchItem: String): Flow<DomainResult<List<UserSearchResult>>>
 }
 
-internal class DefaultGetUsersUsecase @Inject constructor(private val searchRepo: SearchRepo, private val blockedPhrasesRepo: BlockedPhrasesRepo) : GetUsersUsecase {
+internal class DefaultGetUsersUsecase @Inject constructor(
+    private val searchRepo: SearchRepo,
+    private val blockedPhrasesRepo: BlockedPhrasesRepo
+) : GetUsersUsecase {
     override fun invoke(searchItem: String): Flow<DomainResult<List<UserSearchResult>>> {
         val validatedSearchTerm = searchItem.trim().lowercase()
         return flow {
@@ -35,9 +38,14 @@ internal class DefaultGetUsersUsecase @Inject constructor(private val searchRepo
                                         blockedPhrasesRepo.addPhrase(validatedSearchTerm)
                                         DomainResult.Error(NoUsersFound)
                                     } else {
-                                        DomainResult.Loaded(it.repoData.map { userDto -> UserSearchResult.from(userDto) })
+                                        DomainResult.Loaded(it.repoData.map { userDto ->
+                                            UserSearchResult.from(
+                                                userDto
+                                            )
+                                        })
                                     }
                                 }
+
                                 is RepoResult.NotAvailable -> when (it.error) {
                                     RepoErrorType.NetworkError,
                                     RepoErrorType.ServerError,

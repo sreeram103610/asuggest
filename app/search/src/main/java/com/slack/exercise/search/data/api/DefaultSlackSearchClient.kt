@@ -8,7 +8,8 @@ import javax.inject.Inject
 /**
  * Implementation of [DefaultSlackSearchClient] using [SlackSearchApi] to perform the API requests.
  */
-internal class DefaultSlackSearchClient @Inject constructor(val service: SlackSearchApi) : SlackSearchClient {
+internal class DefaultSlackSearchClient @Inject constructor(val service: SlackSearchApi) :
+    SlackSearchClient {
 
     override suspend fun searchUsers(searchTerm: String): DataResult<List<UserDto>, ErrorResponse> {
         return service.searchUsers(searchTerm).let {

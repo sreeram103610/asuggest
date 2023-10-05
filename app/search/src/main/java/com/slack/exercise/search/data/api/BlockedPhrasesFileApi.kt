@@ -12,15 +12,18 @@ interface BlockedPhrasesFileApi {
     suspend fun addUser(user: List<String>)
 }
 
-internal class DefaultBlockedPhrasesFileApi @Inject constructor(private val context: Context) : BlockedPhrasesFileApi {
+internal class DefaultBlockedPhrasesFileApi @Inject constructor(private val context: Context) :
+    BlockedPhrasesFileApi {
 
     private val file = File(context.filesDir, FILE_NAME)
+
     init {
         if (!file.exists() || file.length() == 0L) {
             file.createNewFile()
             FileUtil.copyRawResourceToFile(context, R.raw.denylist, file)
         }
     }
+
     override suspend fun getUsers(): List<String> {
         return FileUtil.readFromFile(file)
     }

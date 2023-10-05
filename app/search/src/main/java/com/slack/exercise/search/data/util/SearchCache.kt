@@ -10,9 +10,12 @@ sealed interface SearchCache {
     fun searchUsers(prefixKey: String): Set<UserDto>
     fun addUsers(userDtoList: List<UserDto>, key: String)
 }
+
 object DefaultSearchCache : SearchCache {
 
-    private val cache = Cache.Builder<UserDto, String>().maximumCacheSize(100).expireAfterWrite(10.minutes).build() // TODO: Add them to buildconfig
+    private val cache =
+        Cache.Builder<UserDto, String>().maximumCacheSize(100).expireAfterWrite(10.minutes)
+            .build() // TODO: Add them to buildconfig
     private val searchTrie = PatriciaTrie<HashSet<UserDto>>()
 
     override fun addUser(userDto: UserDto, searchTerm: String) {
@@ -27,7 +30,12 @@ object DefaultSearchCache : SearchCache {
 
     override fun searchUsers(searchPhrase: String): Set<UserDto> {
         // Check if entries in the cache exists and that you return from cache if the search is not broader and if it is additive. eg: don't return entries for "fa" if the searchPhrase is "f".
-        val (validEntries, invalidEntries) = searchTrie.prefixMap(searchPhrase.lowercase()).values.flatten().partition { cache.get(it).let { cachedSearchPhrase -> cachedSearchPhrase != null && searchPhrase.startsWith(cachedSearchPhrase) } }
+        val (validEntries, invalidEntries) = searchTrie.prefixMap(searchPhrase.lowercase()).values.flatten()
+            .partition {
+                cache.get(it).let { cachedSearchPhrase ->
+                    cachedSearchPhrase != null && searchPhrase.startsWith(cachedSearchPhrase)
+                }
+            }
         removeUsers(invalidEntries)
         return validEntries.toSet()
     }

@@ -17,7 +17,8 @@ import com.slack.exercise.search.domain.model.UserSearchResult
 /**
  * Adapter for the list of [UserSearchResult].
  */
-class UserSearchAdapter(private val context: Context, private val imageLoader: ImageLoader) : RecyclerView.Adapter<UserSearchAdapter.UserSearchViewHolder>() {
+class UserSearchAdapter(private val context: Context, private val imageLoader: ImageLoader) :
+    RecyclerView.Adapter<UserSearchAdapter.UserSearchViewHolder>() {
     private var userSearchResults: List<UserSearchResult> = emptyList()
 
     private lateinit var roundedCorner: RoundedCornersTransformation
@@ -31,7 +32,8 @@ class UserSearchAdapter(private val context: Context, private val imageLoader: I
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        roundedCorner = RoundedCornersTransformation(context.resources.getDimension(R.dimen.userimage_corner_radius))
+        roundedCorner =
+            RoundedCornersTransformation(context.resources.getDimension(R.dimen.userimage_corner_radius))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserSearchViewHolder {
@@ -52,7 +54,8 @@ class UserSearchAdapter(private val context: Context, private val imageLoader: I
         }
     }
 
-    class UserSearchViewHolder(binding: ItemUserSearchBinding) : RecyclerView.ViewHolder(binding.root) {
+    class UserSearchViewHolder(binding: ItemUserSearchBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         val username: TextView = binding.username
         val name: TextView = binding.name

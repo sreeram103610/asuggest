@@ -59,7 +59,12 @@ abstract class AppModule {
         ) =
             OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
-                .cache(Cache(directory = File(context.cacheDir, CACHE_DIR_NAME), maxSize = CACHE_SIZE))
+                .cache(
+                    Cache(
+                        directory = File(context.cacheDir, CACHE_DIR_NAME),
+                        maxSize = CACHE_SIZE
+                    )
+                )
                 .addNetworkInterceptor(cacheInterceptor)
                 .build()
 

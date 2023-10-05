@@ -5,7 +5,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.apache.commons.collections4.trie.PatriciaTrie
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 interface BlockedPhrasesRepo {
@@ -13,7 +12,10 @@ interface BlockedPhrasesRepo {
     fun addPhrase(userName: String)
 }
 
-class DefaultBlockedPhrasesRepo @Inject constructor(scope: CoroutineScope, private val blockedFile: BlockedPhrasesFileApi) : BlockedPhrasesRepo {
+class DefaultBlockedPhrasesRepo @Inject constructor(
+    scope: CoroutineScope,
+    private val blockedFile: BlockedPhrasesFileApi
+) : BlockedPhrasesRepo {
 
     private val searchTrie = PatriciaTrie<String>()
 

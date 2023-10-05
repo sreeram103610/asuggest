@@ -1,6 +1,7 @@
 package com.slack.exercise.search.data.util
 
 import android.content.Context
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
@@ -19,7 +20,7 @@ object FileUtil {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.d("Unable to copy raw resource file")
         }
     }
 
@@ -35,7 +36,7 @@ object FileUtil {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace() // TODO: Remove exceptions
+            Timber.d("Unable to write to file ${file.name}")
         }
     }
 
@@ -50,7 +51,7 @@ object FileUtil {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace() // TODO: Remove exceptions
+            Timber.d("Unable to read from file ${file.name}")
         }
         return data
     }

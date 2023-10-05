@@ -15,7 +15,10 @@ interface SearchRepo {
     fun searchUsers(key: String): Flow<RepoResult<Set<UserDto>, RepoErrorType>>
 }
 
-internal class DefaultSearchRepo @Inject constructor(private val client: SlackSearchClient, private val cache: SearchCache) : SearchRepo {
+internal class DefaultSearchRepo @Inject constructor(
+    private val client: SlackSearchClient,
+    private val cache: SearchCache
+) : SearchRepo {
     override fun searchUsers(key: String): Flow<RepoResult<Set<UserDto>, RepoErrorType>> {
         return flow {
             emit(
