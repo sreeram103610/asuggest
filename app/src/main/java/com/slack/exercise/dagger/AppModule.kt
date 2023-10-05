@@ -12,6 +12,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import okhttp3.Cache
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
@@ -41,7 +43,7 @@ abstract class AppModule {
   companion object {
     @Provides
     @Singleton
-    internal fun retrofitProvider(client: OkHttpClient) =
+    fun retrofitProvider(client: OkHttpClient) =
       Retrofit.Builder()
         .baseUrl(BuildConfig.SLACK_BASE_URL)
         .client(client)
@@ -51,7 +53,11 @@ abstract class AppModule {
 
     @Provides
     @Singleton
-    internal fun okhttpProvider(
+    internal fun ioScope(): CoroutineScope = CoroutineScope(Dispatchers.IO)
+
+    @Provides
+    @Singleton
+    fun okhttpProvider(
       context: Context,
       @Named("CachingInterceptor") cacheInterceptor: Interceptor,
     ) =
@@ -64,7 +70,7 @@ abstract class AppModule {
     @Provides
     @Singleton
     @Named("CachingInterceptor")
-    internal fun cacheInterceptorProvider(context: Context) = object :
+    fun cacheInterceptorProvider(context: Context) = object :
       Interceptor {
       override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
