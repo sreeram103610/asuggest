@@ -4,7 +4,6 @@ import com.slack.exercise.App
 import com.slack.exercise.search.di.SearchModule
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import dagger.android.support.AndroidSupportInjectionModule

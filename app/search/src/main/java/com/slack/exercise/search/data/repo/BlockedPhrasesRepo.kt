@@ -1,8 +1,6 @@
 package com.slack.exercise.search.data.repo
 
 import com.slack.exercise.search.data.api.BlockedPhrasesFileApi
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.apache.commons.collections4.trie.PatriciaTrie
@@ -15,17 +13,17 @@ interface BlockedPhrasesRepo {
     fun addPhrase(userName: String)
 }
 
-class DefaultBlockedPhrasesRepo @Inject constructor(scope: CoroutineScope, private val blockedFile: BlockedPhrasesFileApi): BlockedPhrasesRepo {
+class DefaultBlockedPhrasesRepo @Inject constructor(scope: CoroutineScope, private val blockedFile: BlockedPhrasesFileApi) : BlockedPhrasesRepo {
 
     private val searchTrie = PatriciaTrie<String>()
 
     init {
         scope.launch {
             try {
-            addUsers(blockedFile.getUsers())
-        } catch (e: Exception) {
-            Timber.d("Unable to add Users to Trie. ${e.message}")
-        }
+                addUsers(blockedFile.getUsers())
+            } catch (e: Exception) {
+                Timber.d("Unable to add Users to Trie. ${e.message}")
+            }
         }
     }
 
@@ -40,5 +38,4 @@ class DefaultBlockedPhrasesRepo @Inject constructor(scope: CoroutineScope, priva
     private fun addUsers(usersList: List<String>) {
         searchTrie.putAll(usersList.associateWith { it })
     }
-
 }

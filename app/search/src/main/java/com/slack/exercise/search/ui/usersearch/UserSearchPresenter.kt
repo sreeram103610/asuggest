@@ -1,8 +1,8 @@
 package com.slack.exercise.search.ui.usersearch
 
 import com.slack.exercise.search.domain.dataprovider.UserSearchResultDataProvider
-import com.slack.exercise.search.domain.model.UserSearchResult
 import com.slack.exercise.search.domain.model.DomainResult
+import com.slack.exercise.search.domain.model.UserSearchResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -29,22 +29,23 @@ class UserSearchPresenter @Inject constructor(
     private val searchFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
     private var lastState: UserSearchContract.UiState<List<UserSearchResult>>? = null
 
-  override fun attach(view: UserSearchContract.View) {
-    this.view = view
-      lastState?.let {
-          view.setSearchTerm(it.searchTerm)
-          applyUi(it.domainState) }
-    scope.launch {
-          searchFlow.debounce(250.milliseconds)
-              .flatMapLatest { searchTerm -> userSearchResultDataProvider.fetchUsers(searchTerm).map { Pair(searchTerm, it) } }
-              .collect {
-                  lastState = UserSearchContract.UiState(it.first, it.second)
-                  withContext(Dispatchers.Main) {
-                      applyUi(lastState!!.domainState)
-                  }
-              }
-      }
-  }
+    override fun attach(view: UserSearchContract.View) {
+        this.view = view
+        lastState?.let {
+            view.setSearchTerm(it.searchTerm)
+            applyUi(it.domainState)
+        }
+        scope.launch {
+            searchFlow.debounce(250.milliseconds)
+                .flatMapLatest { searchTerm -> userSearchResultDataProvider.fetchUsers(searchTerm).map { Pair(searchTerm, it) } }
+                .collect {
+                    lastState = UserSearchContract.UiState(it.first, it.second)
+                    withContext(Dispatchers.Main) {
+                        applyUi(lastState!!.domainState)
+                    }
+                }
+        }
+    }
 
     private fun applyUi(result: DomainResult<List<UserSearchResult>>) {
         when (result) {
@@ -59,12 +60,11 @@ class UserSearchPresenter @Inject constructor(
     }
 
     override fun detach() {
-    view = null
-    scope.cancel()
-  }
+        view = null
+        scope.cancel()
+    }
 
-  override fun onQueryTextChange(searchTerm: String) {
-      searchFlow.tryEmit(searchTerm)
-  }
-
+    override fun onQueryTextChange(searchTerm: String) {
+        searchFlow.tryEmit(searchTerm)
+    }
 }

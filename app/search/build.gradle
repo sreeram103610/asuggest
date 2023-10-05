@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'org.jlleitschuh.gradle.ktlint'
 }
 
 android {
@@ -36,7 +37,9 @@ android {
         viewBinding = true
     }
 }
-
+ktlint {
+    debug = true
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"

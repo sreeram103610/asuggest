@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 interface GetUsersUsecase {
-    operator fun invoke(searchItem: String) : Flow<DomainResult<List<UserSearchResult>>>
+    operator fun invoke(searchItem: String): Flow<DomainResult<List<UserSearchResult>>>
 }
 
 internal class DefaultGetUsersUsecase @Inject constructor(private val searchRepo: SearchRepo, private val blockedPhrasesRepo: BlockedPhrasesRepo) : GetUsersUsecase {
@@ -25,30 +25,28 @@ internal class DefaultGetUsersUsecase @Inject constructor(private val searchRepo
             emit(DomainResult.Loading)
             if (blockedPhrasesRepo.phraseExists(validatedSearchTerm)) {
                 emit(DomainResult.Error(NoUsersFound))
-            }
-            else {
-                emitAll(searchRepo.searchUsers(validatedSearchTerm)
-                    .map {
-                        when (it) {
-                            is RepoResult.Available -> {
-                                if (it.repoData.isEmpty()) {
-                                    blockedPhrasesRepo.addPhrase(validatedSearchTerm)
-                                    DomainResult.Error(NoUsersFound)
+            } else {
+                emitAll(
+                    searchRepo.searchUsers(validatedSearchTerm)
+                        .map {
+                            when (it) {
+                                is RepoResult.Available -> {
+                                    if (it.repoData.isEmpty()) {
+                                        blockedPhrasesRepo.addPhrase(validatedSearchTerm)
+                                        DomainResult.Error(NoUsersFound)
+                                    } else {
+                                        DomainResult.Loaded(it.repoData.map { userDto -> UserSearchResult.from(userDto) })
+                                    }
                                 }
-                                else {
-                                    DomainResult.Loaded(it.repoData.map { userDto -> UserSearchResult.from(userDto) })
+                                is RepoResult.NotAvailable -> when (it.error) {
+                                    RepoErrorType.NetworkError,
+                                    RepoErrorType.ServerError,
+                                    RepoErrorType.UnknownError -> DomainResult.Error(InternetError)
                                 }
-                            }
-                            is RepoResult.NotAvailable -> when (it.error) {
-                                RepoErrorType.NetworkError,
-                                RepoErrorType.ServerError,
-                                RepoErrorType.UnknownError -> DomainResult.Error(InternetError)
                             }
                         }
-                    }
                 )
             }
         }
     }
 }
-

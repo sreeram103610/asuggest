@@ -8,11 +8,11 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface SlackSearchApi {
-  /**
-   * Search query. Returns search response
-   */
-  @GET("search")
-  suspend fun searchUsers(@Query("query") query: String): Response<UserSearchResponse>
+    /**
+     * Search query. Returns search response
+     */
+    @GET("search")
+    suspend fun searchUsers(@Query("query") query: String): Response<UserSearchResponse>
 }
 
 /**

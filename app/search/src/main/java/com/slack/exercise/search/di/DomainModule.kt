@@ -13,7 +13,8 @@ abstract class DomainModule {
 
     @Binds
     @Singleton
-    internal abstract fun provideUserSearchResultData(provider: UserSearchResultDataProviderImpl) : UserSearchResultDataProvider
+    internal abstract fun provideUserSearchResultData(provider: UserSearchResultDataProviderImpl): UserSearchResultDataProvider
+
     @Binds
     @Singleton
     internal abstract fun provideGetUsersUsecase(usecase: DefaultGetUsersUsecase): GetUsersUsecase

@@ -1,7 +1,6 @@
 package com.slack.exercise.search.data.api
 
 import android.content.Context
-import android.os.Environment
 import com.slack.exercise.search.R
 import com.slack.exercise.search.data.util.FileUtil
 import java.io.File
@@ -13,7 +12,7 @@ interface BlockedPhrasesFileApi {
     suspend fun addUser(user: List<String>)
 }
 
-internal class DefaultBlockedPhrasesFileApi @Inject constructor(private val context: Context): BlockedPhrasesFileApi {
+internal class DefaultBlockedPhrasesFileApi @Inject constructor(private val context: Context) : BlockedPhrasesFileApi {
 
     private val file = File(context.filesDir, FILE_NAME)
     init {
@@ -33,5 +32,4 @@ internal class DefaultBlockedPhrasesFileApi @Inject constructor(private val cont
     companion object {
         const val FILE_NAME = "denyfile.txt"
     }
-
 }

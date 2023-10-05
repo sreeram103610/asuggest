@@ -10,12 +10,13 @@ import javax.inject.Inject
  */
 internal class DefaultSlackSearchClient @Inject constructor(val service: SlackSearchApi) : SlackSearchClient {
 
-  override suspend fun searchUsers(searchTerm: String): DataResult<List<UserDto>, ErrorResponse> {
-    return service.searchUsers(searchTerm).let {
-        if (it.isSuccessful) {
-            DataResult.Success(it.body()?.userDtos ?: emptyList())
-        } else
-            DataResult.Error(ErrorResponse.ServerError)
+    override suspend fun searchUsers(searchTerm: String): DataResult<List<UserDto>, ErrorResponse> {
+        return service.searchUsers(searchTerm).let {
+            if (it.isSuccessful) {
+                DataResult.Success(it.body()?.userDtos ?: emptyList())
+            } else {
+                DataResult.Error(ErrorResponse.ServerError)
+            }
+        }
     }
-  }
 }

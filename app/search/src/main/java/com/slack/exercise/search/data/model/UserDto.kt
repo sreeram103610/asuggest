@@ -2,16 +2,17 @@ package com.slack.exercise.search.data.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.util.concurrent.Flow
 
 /**
  * User model returned by the API.
  */
 
 @JsonClass(generateAdapter = true)
-data class UserDto(val username: String,
-                   @Json(name = "display_name")
+data class UserDto(
+    val username: String,
+    @Json(name = "display_name")
     val displayName: String,
-                   @Json(name = "avatar_url")
+    @Json(name = "avatar_url")
     val avatarUrl: String,
-    val id: Int)
+    val id: Int
+)

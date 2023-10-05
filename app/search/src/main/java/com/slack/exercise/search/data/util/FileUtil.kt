@@ -1,7 +1,9 @@
 package com.slack.exercise.search.data.util
 
 import android.content.Context
-import java.io.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileWriter
 
 object FileUtil {
 

@@ -31,7 +31,7 @@ abstract class SearchModule {
 
     @SearchScope
     @ContributesAndroidInjector
-    abstract fun searchFragment() : UserSearchFragment
+    abstract fun searchFragment(): UserSearchFragment
 
     @Module
     object Provider {
@@ -42,11 +42,11 @@ abstract class SearchModule {
 
         @Singleton
         @Provides
-        fun provideOfflineCache() : SearchCache = DefaultSearchCache
+        fun provideOfflineCache(): SearchCache = DefaultSearchCache
 
         @Singleton
         @Provides
-        fun provideImageLoader(context: Context) : ImageLoader {
+        fun provideImageLoader(context: Context): ImageLoader {
             return ImageLoader.Builder(context)
                 .memoryCache {
                     MemoryCache.Builder(context)
@@ -72,12 +72,11 @@ abstract class SearchModule {
 
     @Singleton
     @Binds
-    internal abstract fun provideSearchRepo(searchRepo: DefaultSearchRepo) : SearchRepo
+    internal abstract fun provideSearchRepo(searchRepo: DefaultSearchRepo): SearchRepo
 
     @Singleton
     @Binds
     internal abstract fun provideSlackApi(apiImpl: DefaultSlackSearchClient): SlackSearchClient
-
 }
 
 @Scope

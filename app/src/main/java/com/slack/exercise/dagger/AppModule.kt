@@ -15,10 +15,8 @@ import dagger.android.ContributesAndroidInjector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Cache
-import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -33,68 +31,67 @@ import kotlin.time.Duration.Companion.minutes
  */
 @Module
 abstract class AppModule {
-  @ContributesAndroidInjector
-  abstract fun bindMainActivity(): MainActivity
+    @ContributesAndroidInjector
+    abstract fun bindMainActivity(): MainActivity
 
-  @Binds
-  abstract fun applicationContext(app: App): Context
+    @Binds
+    abstract fun applicationContext(app: App): Context
 
-  companion object {
-    @Provides
-    @Singleton
-    fun retrofitProvider(client: OkHttpClient) =
-      Retrofit.Builder()
-        .baseUrl(BuildConfig.SLACK_BASE_URL)
-        .client(client)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
+    companion object {
+        @Provides
+        @Singleton
+        fun retrofitProvider(client: OkHttpClient) =
+            Retrofit.Builder()
+                .baseUrl(BuildConfig.SLACK_BASE_URL)
+                .client(client)
+                .addConverterFactory(MoshiConverterFactory.create())
+                .build()
 
-    @Provides
-    @Singleton
-    internal fun ioScope(): CoroutineScope = CoroutineScope(Dispatchers.IO)
+        @Provides
+        @Singleton
+        internal fun ioScope(): CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    @Provides
-    @Singleton
-    fun okhttpProvider(
-      context: Context,
-      @Named("CachingInterceptor") cacheInterceptor: Interceptor,
-    ) =
-      OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
-        .cache(Cache(directory = File(context.cacheDir, CACHE_DIR_NAME), maxSize = CACHE_SIZE))
-        .addNetworkInterceptor(cacheInterceptor)
-        .build()
+        @Provides
+        @Singleton
+        fun okhttpProvider(
+            context: Context,
+            @Named("CachingInterceptor") cacheInterceptor: Interceptor
+        ) =
+            OkHttpClient.Builder()
+                .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
+                .cache(Cache(directory = File(context.cacheDir, CACHE_DIR_NAME), maxSize = CACHE_SIZE))
+                .addNetworkInterceptor(cacheInterceptor)
+                .build()
 
-    @Provides
-    @Singleton
-    @Named("CachingInterceptor")
-    fun cacheInterceptorProvider(context: Context) = object :
-      Interceptor {
-      override fun intercept(chain: Interceptor.Chain): Response {
-        val response = chain.proceed(chain.request())
-        if (Utils.isInternetAvailable(context)) {
-          val cacheDuration = 15.minutes.inWholeSeconds // TODO: Move to build config
-          return response.newBuilder().header(
-            CACHE_CONTROL,
-            "public, max-age=$cacheDuration"
-          ).removeHeader("pragma")
-            .build()
-        } else {
-          val maxStale = 60.minutes.inWholeSeconds  // TODO: Move to build config
-          return response.newBuilder()
-            .header(CACHE_CONTROL, "public, only-if-cached, max-stale=$maxStale")
-            .build()
+        @Provides
+        @Singleton
+        @Named("CachingInterceptor")
+        fun cacheInterceptorProvider(context: Context) = object :
+            Interceptor {
+            override fun intercept(chain: Interceptor.Chain): Response {
+                val response = chain.proceed(chain.request())
+                if (Utils.isInternetAvailable(context)) {
+                    val cacheDuration = 15.minutes.inWholeSeconds // TODO: Move to build config
+                    return response.newBuilder().header(
+                        CACHE_CONTROL,
+                        "public, max-age=$cacheDuration"
+                    ).removeHeader("pragma")
+                        .build()
+                } else {
+                    val maxStale = 60.minutes.inWholeSeconds // TODO: Move to build config
+                    return response.newBuilder()
+                        .header(CACHE_CONTROL, "public, only-if-cached, max-stale=$maxStale")
+                        .build()
+                }
+            }
         }
-      }
+
+        object Constants {
+            const val CACHE_CONTROL = "Cache-Control"
+
+            const val CACHE_DIR_NAME = "okhttp_cache"
+
+            const val CACHE_SIZE = 10 * 1024 * 1024L
+        }
     }
-
-
-    object Constants {
-      const val CACHE_CONTROL = "Cache-Control"
-
-      const val CACHE_DIR_NAME = "okhttp_cache"
-
-      const val CACHE_SIZE = 10 * 1024 * 1024L
-    }
-  }
 }

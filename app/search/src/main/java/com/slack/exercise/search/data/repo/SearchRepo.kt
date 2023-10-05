@@ -7,13 +7,9 @@ import com.slack.exercise.search.data.model.UserDto
 import com.slack.exercise.search.data.repo.model.RepoErrorType
 import com.slack.exercise.search.data.repo.model.RepoResult
 import com.slack.exercise.search.data.util.SearchCache
-import io.github.reactivecircus.cache4k.Cache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.apache.commons.collections4.trie.PatriciaTrie
 import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.time.Duration.Companion.minutes
 
 interface SearchRepo {
     fun searchUsers(key: String): Flow<RepoResult<Set<UserDto>, RepoErrorType>>
@@ -55,4 +51,3 @@ internal class DefaultSearchRepo @Inject constructor(private val client: SlackSe
         }
     }
 }
-

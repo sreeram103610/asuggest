@@ -33,6 +33,9 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
 }
+plugins {
+    id 'org.jlleitschuh.gradle.ktlint' version '11.6.0' // use the latest version
+}
 
 allprojects {
     repositories {
