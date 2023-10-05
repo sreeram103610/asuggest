@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="toolbar_height">48dp</dimen>
-    <dimen name="item_margin">16dp</dimen>
+    <dimen name="item_height">44dp</dimen>
+    <dimen name="search_result_horizontal_margin">16dp</dimen>
+    <dimen name="search_result_vertical_margin">8dp</dimen>
+    <dimen name="search_image_name_margin">12dp</dimen>
+    <dimen name="search_name_username_margin">8dp</dimen>
     <dimen name="loading_height">64dp</dimen>
+    <dimen name="userimage_size">28dp</dimen>
+    <dimen name="userimage_corner_radius">4dp</dimen>
+    <dimen name="fontsize">16sp</dimen>
+    <dimen name="lineheight">12sp</dimen>
+    <dimen name="divider_size">0.5dp</dimen>
 </resources>

@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="@dimen/toolbar_height"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark" />
+        app:theme="@style/ThemeOverlay.AppCompat.Dark" >
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_search_result_list"

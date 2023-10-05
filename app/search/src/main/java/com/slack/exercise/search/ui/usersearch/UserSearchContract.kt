@@ -1,6 +1,7 @@
 package com.slack.exercise.search.ui.usersearch
 
 import com.slack.exercise.search.domain.model.UserSearchResult
+import com.slack.exercise.search.domain.model.DomainResult
 
 
 /**
@@ -25,7 +26,11 @@ interface UserSearchContract {
      * Call when an error occurs during the execution of search queries.
      */
     fun onUserSearchError(error: String)
+    fun setSearchTerm(word: String)
   }
+
+  data class UiState<T>(val searchTerm: String, val domainState: DomainResult<T>)
+
 
   interface Presenter {
     /**

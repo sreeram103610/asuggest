@@ -6,9 +6,13 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.ImageLoader
 import com.slack.exercise.search.R
 import com.slack.exercise.search.databinding.FragmentUserSearchBinding
 import com.slack.exercise.search.domain.model.UserSearchResult
@@ -22,8 +26,14 @@ import javax.inject.Inject
  */
 class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
+  private var searchTerm: String? = null
+  private lateinit var searchView: SearchView
+
   @Inject
   internal lateinit var presenter: UserSearchPresenter
+
+  @Inject
+  internal lateinit var imageLoader: ImageLoader
 
   private lateinit var userSearchBinding: FragmentUserSearchBinding
 
@@ -57,8 +67,15 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     inflater.inflate(R.menu.menu_user_search, menu)
 
-    val searchView: SearchView = menu.findItem(R.id.search_menu_item).actionView as SearchView
+    searchView = menu.findItem(R.id.search_menu_item).actionView as SearchView
     searchView.queryHint = getString(R.string.search_users_hint)
+    searchTerm?.let { searchView.setQuery(it, false)
+      searchView.isIconified = false
+    }
+
+    val editText = searchView.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
+    editText.maxLines = 1
+
     searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
       override fun onQueryTextSubmit(query: String): Boolean {
         return true
@@ -71,12 +88,15 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     })
   }
 
+
+
   override fun onUserSearchResults(results: List<UserSearchResult>) {
     userSearchBinding.progressBar.hide()
     userSearchBinding.userSearchResultList.visibility = View.VISIBLE
 
     val adapter = userSearchBinding.userSearchResultList.adapter as UserSearchAdapter
-    adapter.setResults(results)
+    adapter.setResults(results.sortedBy { it.name })
+    userSearchBinding.userSearchResultList.scrollToPosition(0)
   }
 
   override fun onUserSearchLoading() {
@@ -90,18 +110,29 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     Timber.e("Error searching users.")
   }
 
+  override fun setSearchTerm(word: String) {
+    searchTerm = word
+  }
+
   private fun setUpToolbar() {
     val act = activity as? AppCompatActivity
     act?.setSupportActionBar(userSearchBinding.toolbar)
   }
 
   private fun setUpList() {
+
+    val dividerItemDecoration = DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL)
+    ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.let {
+      dividerItemDecoration.setDrawable(it)
+    }
+
     with(userSearchBinding.userSearchResultList) {
-      adapter = UserSearchAdapter()
+      adapter = UserSearchAdapter(context.applicationContext, imageLoader)
       layoutManager = LinearLayoutManager(activity).apply {
         orientation = LinearLayoutManager.VERTICAL
       }
       setHasFixedSize(true)
+      addItemDecoration(dividerItemDecoration)
     }
   }
 }

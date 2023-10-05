@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="search_item_bg">#FFFFFF</color>
+    <color name="search_divider_bg">#DDDDDD</color>
+    <color name="username">#616061</color>
+    <color name="name">#1D1C1D</color>
+</resources>
