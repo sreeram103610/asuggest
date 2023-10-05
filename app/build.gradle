@@ -33,31 +33,39 @@ android {
     namespace 'com.slack.exercise'
 }
 
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
-    implementation "androidx.recyclerview:recyclerview:${versions.recyclerview}"
-    implementation "io.reactivex.rxjava3:rxkotlin:${versions.rx}"
-    implementation "io.reactivex.rxjava3:rxandroid:${versions.rxAndroid}"
+
+    // Timber logging
     implementation "com.jakewharton.timber:timber:${versions.timber}"
+
+    // Retrofit for network
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:${versions.retrofit}"
     implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
 
+    // Moshi for JSON serialization/deserialization and Retrofit converter
     implementation "com.squareup.moshi:moshi-kotlin:${versions.moshi}"
     implementation "com.squareup.retrofit2:converter-moshi:${versions.moshiconv}"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
 
+    // Dagger for dependency injection
     implementation "com.google.dagger:dagger:${versions.dagger}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
     kapt "com.google.dagger:dagger-android-processor:${versions.dagger}"
     implementation "com.google.dagger:dagger-android-support:${versions.dagger}"
 
+    // AndroidX Core KTX for Kotlin extensions
     implementation "androidx.core:core-ktx:${versions.ktx}"
 
+    // Coil for image loading
+    implementation "io.coil-kt:coil:${versions.coil}"
+
+    // JUnit for unit testing
     testImplementation "junit:junit:${versions.junit}"
+
     androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
 
