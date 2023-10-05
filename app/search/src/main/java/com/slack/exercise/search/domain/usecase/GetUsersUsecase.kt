@@ -14,14 +14,37 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * Use case for fetching users based on a search term.
+ */
 interface GetUsersUsecase {
+
+    /**
+     * Retrieves users matching the given search term.
+     *
+     * @param searchItem The term to search users by.
+     * @return A [Flow] of [DomainResult] containing the list of matching users or an error.
+     */
     operator fun invoke(searchItem: String): Flow<DomainResult<List<UserSearchResult>>>
 }
 
+/**
+ * Default implementation of [GetUsersUsecase].
+ *
+ * @property searchRepo The repository to search users.
+ * @property blockedPhrasesRepo The repository to manage blocked search phrases.
+ */
 internal class DefaultGetUsersUsecase @Inject constructor(
     private val searchRepo: SearchRepo,
     private val blockedPhrasesRepo: BlockedPhrasesRepo
 ) : GetUsersUsecase {
+
+    /**
+     * Executes the user search, handles the blocked phrases, and maps the results or errors into [DomainResult].
+     *
+     * @param searchItem The search term to find users.
+     * @return A [Flow] of [DomainResult] containing the list of users or an error.
+     */
     override fun invoke(searchItem: String): Flow<DomainResult<List<UserSearchResult>>> {
         val validatedSearchTerm = searchItem.trim().lowercase()
         return flow {

@@ -8,6 +8,8 @@ import javax.inject.Inject
 
 /**
  * Implementation of [UserSearchResultDataProvider].
+ *
+ *  @property getUsersUsecase The use case to handle the retrieval of users.
  */
 
 class UserSearchResultDataProviderImpl @Inject constructor(
@@ -15,7 +17,10 @@ class UserSearchResultDataProviderImpl @Inject constructor(
 ) : UserSearchResultDataProvider {
 
     /**
-     * Returns a [Flow] emitting a list of [UserSearchResult] if successful.
+     * Invokes [getUsersUsecase] to fetch users based on the specified [searchTerm], and emits the results as a [Flow].
+     *
+     * @param searchTerm The term to search users by.
+     * @return A [Flow] emitting the search results.
      */
     override fun fetchUsers(searchTerm: String): Flow<DomainResult<List<UserSearchResult>>> {
         return getUsersUsecase(searchTerm)

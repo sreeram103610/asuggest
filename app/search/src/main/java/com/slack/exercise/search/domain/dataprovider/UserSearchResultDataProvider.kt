@@ -5,13 +5,15 @@ import com.slack.exercise.search.domain.model.UserSearchResult
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Provider of [UserSearchResult].
- * This interface abstracts the logic of searching for users through the API or other data sources.
+ * Handles the retrieval of [UserSearchResult], abstracting the underlying data sources and search logic.
  */
 interface UserSearchResultDataProvider {
 
     /**
-     * Returns a [FLow] emitting a list of [UserSearchResult] if successful.
+     * Fetches users matching the provided search term.
+     *
+     * @param searchTerm The term to base the search on.
+     * @return A [Flow] emitting the search results.
      */
-    fun fetchUsers(searchTerm: String): Flow<DomainResult<List<UserSearchResult>>> // TODO: Change to domain result
+    fun fetchUsers(searchTerm: String): Flow<DomainResult<List<UserSearchResult>>>
 }
