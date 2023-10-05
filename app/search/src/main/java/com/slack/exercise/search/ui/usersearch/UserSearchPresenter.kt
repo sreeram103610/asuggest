@@ -31,6 +31,7 @@ class UserSearchPresenter @Inject constructor(
 
     override fun attach(view: UserSearchContract.View) {
         this.view = view
+        // Handles config changes
         lastState?.let {
             view.setSearchTerm(it.searchTerm)
             applyUi(it.domainState)
