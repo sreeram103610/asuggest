@@ -24,6 +24,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * Module to setup Application scoped instances that require providers.
@@ -70,24 +71,21 @@ abstract class AppModule {
         @Provides
         @Singleton
         @Named("CachingInterceptor")
-        fun cacheInterceptorProvider(context: Context) = object :
-            Interceptor {
-            override fun intercept(chain: Interceptor.Chain): Response {
-                val response = chain.proceed(chain.request())
-                return if (Utils.isInternetAvailable(context)) {
-                    response.newBuilder().header(
+        fun cacheInterceptorProvider(context: Context) = Interceptor { chain ->
+            val response = chain.proceed(chain.request())
+            if (Utils.isInternetAvailable(context)) {
+                response.newBuilder().header(
+                    CACHE_CONTROL,
+                    "public, max-age=${BuildConfig.OKHTTP_CACHE_DURATION_MINUTES * 60}"
+                ).removeHeader("pragma")
+                    .build()
+            } else {
+                response.newBuilder()
+                    .header(
                         CACHE_CONTROL,
-                        "public, max-age=${BuildConfig.OKHTTP_CACHE_DURATION_MINUTES}"
-                    ).removeHeader("pragma")
-                        .build()
-                } else {
-                    response.newBuilder()
-                        .header(
-                            CACHE_CONTROL,
-                            "public, only-if-cached, max-stale=${BuildConfig.OKHTTP_CACHE_DURATION_MINUTES}"
-                        )
-                        .build()
-                }
+                        "public, only-if-cached, max-stale=${BuildConfig.OKHTTP_CACHE_DURATION_MINUTES * 60}"
+                    )
+                    .build()
             }
         }
 
