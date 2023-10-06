@@ -5,7 +5,7 @@ plugins {
     id 'kotlin-kapt'
     id 'org.jlleitschuh.gradle.ktlint'
     id 'io.gitlab.arturbosch.detekt'
-
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -61,7 +61,7 @@ dependencies {
 
     // Moshi for JSON serialization/deserialization
     implementation "com.squareup.moshi:moshi-kotlin:${versions.moshi}"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
 
     // OkHttp for HTTP requests and logging interceptor
     implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"

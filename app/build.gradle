@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jlleitschuh.gradle.ktlint'
 apply plugin: 'io.gitlab.arturbosch.detekt'
+apply plugin: 'com.google.devtools.ksp'
 
 android {
     compileSdk 34
@@ -53,7 +54,7 @@ dependencies {
     // Moshi for JSON serialization/deserialization and Retrofit converter
     implementation "com.squareup.moshi:moshi-kotlin:${versions.moshi}"
     implementation "com.squareup.retrofit2:converter-moshi:${versions.moshiconv}"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
 
     // Dagger for dependency injection
     implementation "com.google.dagger:dagger:${versions.dagger}"
