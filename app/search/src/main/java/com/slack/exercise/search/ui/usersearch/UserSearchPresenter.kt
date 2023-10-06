@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.milliseconds
@@ -46,7 +45,7 @@ class UserSearchPresenter @Inject constructor(
                 .collect {
                     lastState = UserSearchContract.UiState(it.first, it.second)
                     withContext(Dispatchers.Main) {
-                        applyUi(lastState!!.domainState)
+                        applyUi((lastState ?: return@withContext).domainState)
                     }
                 }
         }
@@ -70,7 +69,6 @@ class UserSearchPresenter @Inject constructor(
     }
 
     override fun onQueryTextChange(searchTerm: String) {
-        Timber.d("searchTerm - ${searchTerm}")
         searchFlow.tryEmit(searchTerm)
     }
 }

@@ -11,7 +11,7 @@ import javax.inject.Inject
  *
  * @property service The [SlackSearchApi] service used to perform API requests.
  */
-internal class DefaultSlackSearchClient @Inject constructor(val service: SlackSearchApi) :
+internal class DefaultSlackSearchClient @Inject constructor(private val service: SlackSearchApi) :
     SlackSearchClient {
 
     /**

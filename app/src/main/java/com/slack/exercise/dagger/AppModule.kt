@@ -74,14 +74,14 @@ abstract class AppModule {
             Interceptor {
             override fun intercept(chain: Interceptor.Chain): Response {
                 val response = chain.proceed(chain.request())
-                if (Utils.isInternetAvailable(context)) {
-                    return response.newBuilder().header(
+                return if (Utils.isInternetAvailable(context)) {
+                    response.newBuilder().header(
                         CACHE_CONTROL,
                         "public, max-age=${BuildConfig.OKHTTP_CACHE_DURATION_MINUTES}"
                     ).removeHeader("pragma")
                         .build()
                 } else {
-                    return response.newBuilder()
+                    response.newBuilder()
                         .header(
                             CACHE_CONTROL,
                             "public, only-if-cached, max-stale=${BuildConfig.OKHTTP_CACHE_DURATION_MINUTES}"

@@ -42,7 +42,7 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         userSearchBinding = FragmentUserSearchBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
