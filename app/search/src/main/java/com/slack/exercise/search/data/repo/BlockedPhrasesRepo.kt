@@ -15,17 +15,17 @@ interface BlockedPhrasesRepo {
     /**
      * Checks if a phrase is blocked.
      *
-     * @param userName The phrase to check.
+     * @param searchTerm The phrase to check.
      * @return `true` if the phrase is blocked, otherwise `false`.
      */
-    fun phraseExists(userName: String): Boolean
+    fun phraseExists(searchTerm: String): Boolean
 
     /**
      * Adds a phrase to the blocked list.
      *
-     * @param userName The phrase to block.
+     * @param searchTerm The phrase to block.
      */
-    fun addPhrase(userName: String)
+    fun addPhrase(searchTerm: String)
 }
 
 /**
@@ -38,12 +38,12 @@ class DefaultBlockedPhrasesRepo @Inject constructor(
     private val blockedFile: BlockedPhrasesFileApi
 ) : BlockedPhrasesRepo {
 
-    private val searchTrie = PatriciaTrie<String>()
+    private val searchTrie = PatriciaTrie<Boolean>()
 
     init {
         scope.launch {
             try {
-                addUsers(blockedFile.getUsers())
+                addPhrases(blockedFile.getUsers())
             } catch (e: Exception) {
                 Timber.d("Unable to add Users to Trie. ${e.message}")
             }
@@ -51,25 +51,27 @@ class DefaultBlockedPhrasesRepo @Inject constructor(
     }
 
     /**
-     * Checks if a username is in the blocked phrases list.
+     * Checks if a search term or it's prefixes are in the blocked phrases list.
      */
-    override fun phraseExists(userName: String): Boolean {
-        return searchTrie.containsValue(userName)
+    override fun phraseExists(searchTerm: String): Boolean {
+        searchTerm.indices
+            .forEach { if(searchTrie.containsKey(searchTerm.substring(0, it + 1))) return true }
+        return false
     }
 
     /**
-     * Adds a username to the blocked phrases list.
+     * Adds a searchTerm to the blocked phrases list.
      */
-    override fun addPhrase(userName: String) {
-        searchTrie.put(userName, userName)
+    override fun addPhrase(searchTerm: String) {
+        searchTrie[searchTerm] = true
     }
 
     /**
-     * Adds multiple users to the blocked phrases list.
+     * Adds multiple terms to the blocked phrases list.
      *
-     * @param usersList The list of usernames to block.
+     * @param phraseList The list of usernames to block.
      */
-    private fun addUsers(usersList: List<String>) {
-        searchTrie.putAll(usersList.associateWith { it })
+    private fun addPhrases(phraseList: List<String>) {
+        phraseList.forEach { addPhrase(it) }
     }
 }
