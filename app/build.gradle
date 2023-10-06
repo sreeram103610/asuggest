@@ -1,12 +1,12 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply plugin: 'io.gitlab.arturbosch.detekt'
+apply plugin: 'com.google.devtools.ksp'
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.slack.autocomplete"
         minSdkVersion 23
@@ -21,41 +21,58 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    defaultConfig {
+        buildConfigField("String", "SLACK_BASE_URL", "\"https://mobile-code-exercise-a7fb88c7afa6.herokuapp.com\"")
+        buildConfigField("Integer", "OKHTTP_CACHE_DURATION_MINUTES", "15")
+        buildConfigField("Integer", "OFFLINE_CACHE_DURATION_MINUTES", "60")
+    }
     compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding = true
     }
     namespace 'com.slack.exercise'
 }
-
-tasks.withType(KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+ktlint {
+    debug = true
 }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
-    implementation "androidx.recyclerview:recyclerview:${versions.recyclerview}"
-    implementation "io.reactivex.rxjava3:rxkotlin:${versions.rx}"
-    implementation "io.reactivex.rxjava3:rxandroid:${versions.rxAndroid}"
+
+    // Timber logging
     implementation "com.jakewharton.timber:timber:${versions.timber}"
+
+    // Retrofit for network
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:${versions.retrofit}"
-    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
 
+    // Moshi for JSON serialization/deserialization and Retrofit converter
+    implementation "com.squareup.moshi:moshi-kotlin:${versions.moshi}"
+    implementation "com.squareup.retrofit2:converter-moshi:${versions.moshiconv}"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
+
+    // Dagger for dependency injection
     implementation "com.google.dagger:dagger:${versions.dagger}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
     kapt "com.google.dagger:dagger-android-processor:${versions.dagger}"
     implementation "com.google.dagger:dagger-android-support:${versions.dagger}"
 
+    // AndroidX Core KTX for Kotlin extensions
+    implementation "androidx.core:core-ktx:${versions.ktx}"
+
+    // Coil for image loading
+    implementation "io.coil-kt:coil:${versions.coil}"
+
+    // JUnit for unit testing
     testImplementation "junit:junit:${versions.junit}"
+
     androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+
+    implementation project(":app:search")
 }

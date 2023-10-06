@@ -1,0 +1,91 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'org.jlleitschuh.gradle.ktlint'
+    id 'io.gitlab.arturbosch.detekt'
+    id 'com.google.devtools.ksp'
+}
+
+android {
+    namespace 'com.slack.exercise.search'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 23
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    defaultConfig {
+        buildConfigField("Double", "IMAGE_CACHE_MAX_MEMORY_PERCENT", "0.20d")
+        buildConfigField("String", "IMAGE_CACHE_NAME", "\"user_images\"")
+        buildConfigField("Integer", "MEMORY_CACHE_DURATION_MINUTES", "15")
+        buildConfigField("Integer", "MEMORY_CACHE_SIZE", "100")
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        viewBinding = true
+    }
+}
+ktlint {
+    debug = true
+}
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+
+    // AndroidX dependencies
+    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
+    implementation "androidx.recyclerview:recyclerview:${versions.recyclerview}"
+
+    // Logging library
+    implementation "com.jakewharton.timber:timber:${versions.timber}"
+
+    // Retrofit for network requests
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-moshi:${versions.moshiconv}"
+
+    // Moshi for JSON serialization/deserialization
+    implementation "com.squareup.moshi:moshi-kotlin:${versions.moshi}"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
+
+    // OkHttp for HTTP requests and logging interceptor
+    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+
+    // Apache Commons Collections
+    implementation "org.apache.commons:commons-collections4:${versions.apache}"
+
+    // Dagger for dependency injection
+    implementation "com.google.dagger:dagger:${versions.dagger}"
+    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+    kapt "com.google.dagger:dagger-android-processor:${versions.dagger}"
+    implementation "com.google.dagger:dagger-android-support:${versions.dagger}"
+
+    // Cache4k for caching
+    implementation "io.github.reactivecircus.cache4k:cache4k:${versions.cache}"
+
+    // ConstraintLayout for complex layouts
+    implementation "androidx.constraintlayout:constraintlayout:${versions.constraintlayout}"
+
+    // Coil for image loading
+    implementation "io.coil-kt:coil:${versions.coil}"
+
+    // Unit and UI testing libraries
+    testImplementation "junit:junit:${versions.junit}"
+    androidTestImplementation "androidx.test.ext:junit:${versions.androidxJunit}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+}

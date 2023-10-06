@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/search_item_bg"
+    android:paddingHorizontal="@dimen/search_result_horizontal_margin"
+    android:paddingVertical="@dimen/search_result_vertical_margin">
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/search_name_username_margin"
+        android:fontFamily="@font/lato_regular"
+        android:lineSpacingExtra="@dimen/lineheight"
+        android:textColor="@color/username"
+        android:textSize="@dimen/fontsize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/search_image_name_margin"
+        android:fontFamily="@font/lato_bold"
+        android:lineSpacingExtra="@dimen/lineheight"
+        android:textColor="@color/name"
+        android:textSize="@dimen/fontsize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/userimage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/userimage"
+        android:layout_width="@dimen/userimage_size"
+        android:layout_height="@dimen/userimage_size"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
