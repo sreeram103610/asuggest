@@ -17,6 +17,7 @@ import com.slack.exercise.search.data.repo.DefaultSearchRepo
 import com.slack.exercise.search.data.repo.SearchRepo
 import com.slack.exercise.search.data.util.DefaultSearchCache
 import com.slack.exercise.search.data.util.SearchCache
+import com.slack.exercise.search.ui.usersearch.UserSearchAdapter
 import com.slack.exercise.search.ui.usersearch.UserSearchFragment
 import dagger.Binds
 import dagger.Module
@@ -60,6 +61,10 @@ abstract class SearchModule {
                 }
                 .build()
         }
+
+        @Provides
+        @Singleton
+        fun provideUserAdapter(context: Context, imageLoader: ImageLoader) = UserSearchAdapter(context.applicationContext, imageLoader)
     }
 
     @Singleton

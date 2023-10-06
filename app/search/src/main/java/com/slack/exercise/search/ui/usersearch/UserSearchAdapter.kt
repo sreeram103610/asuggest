@@ -32,6 +32,7 @@ class UserSearchAdapter(private val context: Context, private val imageLoader: I
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
+        stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
         roundedCorner =
             RoundedCornersTransformation(context.resources.getDimension(R.dimen.userimage_corner_radius))
     }
@@ -46,13 +47,16 @@ class UserSearchAdapter(private val context: Context, private val imageLoader: I
     }
 
     override fun onBindViewHolder(holder: UserSearchViewHolder, position: Int) {
-        holder.username.text = userSearchResults[position].username
-        holder.name.text = userSearchResults[position].name
-        holder.userImage.load(userSearchResults[position].imageUri, imageLoader = imageLoader) {
-            placeholder(R.drawable.placeholder)
-            error(R.drawable.placeholder)
-            transformations(roundedCorner)
+        with(holder) {
+            username.text = userSearchResults[position].username
+            name.text = userSearchResults[position].name
+            userImage.load(userSearchResults[position].imageUri, imageLoader = imageLoader) {
+                placeholder(R.drawable.placeholder)
+                error(R.drawable.placeholder)
+                transformations(roundedCorner)
+            }
         }
+
     }
 
     class UserSearchViewHolder(binding: ItemUserSearchBinding) :

@@ -1,12 +1,14 @@
 package com.slack.exercise.dagger
 
 import android.content.Context
+import coil.ImageLoader
 import com.slack.exercise.App
 import com.slack.exercise.BuildConfig
 import com.slack.exercise.MainActivity
 import com.slack.exercise.dagger.AppModule.Companion.Constants.CACHE_CONTROL
 import com.slack.exercise.dagger.AppModule.Companion.Constants.CACHE_DIR_NAME
 import com.slack.exercise.dagger.AppModule.Companion.Constants.CACHE_SIZE
+import com.slack.exercise.search.ui.usersearch.UserSearchAdapter
 import com.slack.exercise.utils.Utils
 import dagger.Binds
 import dagger.Module

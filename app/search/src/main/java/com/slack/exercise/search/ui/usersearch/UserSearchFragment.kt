@@ -22,31 +22,28 @@ import timber.log.Timber
 import javax.inject.Inject
 
 /**
- * Main fragment displaying and handling interactions with the view.
+ * Main fragment for displaying and handling interactions with the user search view.
  * We use the MVP pattern and attach a Presenter that will be in charge of non view related operations.
  */
 class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
-    private var searchTerm: String? = null
+    @Inject
+    lateinit var presenter: UserSearchPresenter
+
+    @Inject
+    lateinit var imageLoader: ImageLoader
+
+    @Inject
+    lateinit var userSearchAdapter: UserSearchAdapter
+
+    private lateinit var binding: FragmentUserSearchBinding
     private lateinit var searchView: SearchView
+    private var searchTerm: String? = null
 
-    @Inject
-    internal lateinit var presenter: UserSearchPresenter
-
-    @Inject
-    internal lateinit var imageLoader: ImageLoader
-
-    private lateinit var userSearchBinding: FragmentUserSearchBinding
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        userSearchBinding = FragmentUserSearchBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentUserSearchBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return userSearchBinding.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,63 +54,44 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
 
     override fun onStart() {
         super.onStart()
-
         presenter.attach(this)
     }
 
     override fun onStop() {
-        super.onStop()
-
         presenter.detach()
+        super.onStop()
     }
 
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_user_search, menu)
-
-        searchView = menu.findItem(R.id.search_menu_item).actionView as SearchView
-        searchView.queryHint = getString(R.string.search_users_hint)
-        searchTerm?.let {
-            searchView.setQuery(it, false)
-            searchView.isIconified = false
-            searchView.imeOptions = searchView.imeOptions or EditorInfo.IME_FLAG_NO_EXTRACT_UI
-        }
-
-        val editText = searchView.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
-        editText.maxLines = 1
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                presenter.onQueryTextChange(newText)
-                return true
-            }
-        })
+        setupSearchView(menu)
     }
 
     override fun onUserSearchResults(results: List<UserSearchResult>) {
-        userSearchBinding.progressBar.visibility = View.GONE
-        userSearchBinding.userSearchResultList.visibility = View.VISIBLE
-        userSearchBinding.errorTextView.visibility = View.GONE
-
-        val adapter = userSearchBinding.userSearchResultList.adapter as UserSearchAdapter
-        adapter.setResults(results.sortedBy { it.name })
-        userSearchBinding.userSearchResultList.scrollToPosition(0)
+        with(binding) {
+            progressBar.visibility = View.GONE
+            userSearchResultList.visibility = View.VISIBLE
+            errorTextView.visibility = View.GONE
+            userSearchResultList.scrollToPosition(0)
+        }
+        userSearchAdapter.setResults(results.sortedBy { it.name })
     }
 
     override fun onUserSearchLoading() {
-        userSearchBinding.progressBar.visibility = View.VISIBLE
-        userSearchBinding.userSearchResultList.visibility = View.GONE
-        userSearchBinding.errorTextView.visibility = View.GONE
+        with(binding) {
+            progressBar.visibility = View.VISIBLE
+            userSearchResultList.visibility = View.GONE
+            errorTextView.visibility = View.GONE
+        }
     }
 
     override fun onUserSearchError(error: String) {
-        userSearchBinding.progressBar.visibility = View.GONE
-        userSearchBinding.userSearchResultList.visibility = View.GONE
-        userSearchBinding.errorTextView.visibility = View.VISIBLE
+        with(binding) {
+            progressBar.visibility = View.GONE
+            userSearchResultList.visibility = View.GONE
+            errorTextView.visibility = View.VISIBLE
+        }
         Timber.e("Error searching users.")
     }
 
@@ -122,23 +100,39 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     }
 
     private fun setUpToolbar() {
-        val act = activity as? AppCompatActivity
-        act?.setSupportActionBar(userSearchBinding.toolbar)
+        (activity as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
     }
 
     private fun setUpList() {
-        val dividerItemDecoration = DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL)
-        ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.let {
-            dividerItemDecoration.setDrawable(it)
+        with(binding.userSearchResultList) {
+            adapter = userSearchAdapter
+            layoutManager = LinearLayoutManager(activity)
+            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL).apply {
+                ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.let { setDrawable(it) }
+            })
         }
+    }
 
-        with(userSearchBinding.userSearchResultList) {
-            adapter = UserSearchAdapter(context.applicationContext, imageLoader)
-            layoutManager = LinearLayoutManager(activity).apply {
-                orientation = LinearLayoutManager.VERTICAL
+    private fun setupSearchView(menu: Menu) {
+        searchView = menu.findItem(R.id.search_menu_item).actionView as SearchView
+        searchView.apply {
+            queryHint = getString(R.string.search_users_hint)
+            imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_EXTRACT_UI
+            findViewById<EditText>(androidx.appcompat.R.id.search_src_text).maxLines = 1
+
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String) = true
+
+                override fun onQueryTextChange(newText: String): Boolean {
+                    presenter.onQueryTextChange(newText)
+                    return true
+                }
+            })
+
+            searchTerm?.let {
+                setQuery(it, false)
+                isIconified = false
             }
-            setHasFixedSize(true)
-            addItemDecoration(dividerItemDecoration)
         }
     }
 }
