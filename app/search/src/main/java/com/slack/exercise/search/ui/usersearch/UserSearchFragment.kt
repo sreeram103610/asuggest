@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -75,6 +76,7 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
         searchTerm?.let {
             searchView.setQuery(it, false)
             searchView.isIconified = false
+            searchView.imeOptions = searchView.imeOptions or EditorInfo.IME_FLAG_NO_EXTRACT_UI
         }
 
         val editText = searchView.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
