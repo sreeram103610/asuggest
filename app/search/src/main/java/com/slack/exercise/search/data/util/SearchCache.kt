@@ -1,5 +1,6 @@
 package com.slack.exercise.search.data.util
 
+import com.slack.exercise.search.BuildConfig
 import com.slack.exercise.search.data.model.UserDto
 import io.github.reactivecircus.cache4k.Cache
 import org.apache.commons.collections4.trie.PatriciaTrie
@@ -41,8 +42,9 @@ sealed interface SearchCache {
 object DefaultSearchCache : SearchCache {
 
     private val cache =
-        Cache.Builder<UserDto, String>().maximumCacheSize(100).expireAfterWrite(10.minutes)
-            .build() // TODO: Add them to buildconfig
+        Cache.Builder<UserDto, String>().maximumCacheSize(BuildConfig.MEMORY_CACHE_SIZE.toLong())
+            .expireAfterWrite(BuildConfig.MEMORY_CACHE_DURATION_MINUTES.minutes)
+            .build()
     private val searchTrie = PatriciaTrie<HashSet<UserDto>>()
 
     /**

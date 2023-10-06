@@ -27,6 +27,8 @@ android {
     defaultConfig {
         buildConfigField("Double", "IMAGE_CACHE_MAX_MEMORY_PERCENT", "0.20d")
         buildConfigField("String", "IMAGE_CACHE_NAME", "\"user_images\"")
+        buildConfigField("Integer", "MEMORY_CACHE_DURATION_MINUTES", "15")
+        buildConfigField("Integer", "MEMORY_CACHE_SIZE", "100")
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

@@ -4,7 +4,6 @@ import com.slack.exercise.search.data.model.DataResult
 import com.slack.exercise.search.data.model.ErrorResponse
 import com.slack.exercise.search.data.model.UserDto
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 /**

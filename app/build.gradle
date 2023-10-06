@@ -22,6 +22,8 @@ android {
     }
     defaultConfig {
         buildConfigField("String", "SLACK_BASE_URL", "\"https://mobile-code-exercise-a7fb88c7afa6.herokuapp.com\"")
+        buildConfigField("Integer", "OKHTTP_CACHE_DURATION_MINUTES", "15")
+        buildConfigField("Integer", "OFFLINE_CACHE_DURATION_MINUTES", "60")
     }
     compileOptions {
         targetCompatibility JavaVersion.VERSION_17
