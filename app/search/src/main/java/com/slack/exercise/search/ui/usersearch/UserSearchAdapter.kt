@@ -50,6 +50,7 @@ class UserSearchAdapter(private val context: Context, private val imageLoader: I
         holder.name.text = userSearchResults[position].name
         holder.userImage.load(userSearchResults[position].imageUri, imageLoader = imageLoader) {
             placeholder(R.drawable.placeholder)
+            error(R.drawable.placeholder)
             transformations(roundedCorner)
         }
     }
