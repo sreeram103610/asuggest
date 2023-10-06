@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.milliseconds
@@ -25,7 +26,7 @@ class UserSearchPresenter @Inject constructor(
 ) : UserSearchContract.Presenter {
 
     private var view: UserSearchContract.View? = null
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private lateinit var scope: CoroutineScope
     private val searchFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
     private var lastState: UserSearchContract.UiState<List<UserSearchResult>>? = null
 
@@ -36,6 +37,7 @@ class UserSearchPresenter @Inject constructor(
             view.setSearchTerm(it.searchTerm)
             applyUi(it.domainState)
         }
+        scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             searchFlow.debounce(250.milliseconds)
                 .flatMapLatest { searchTerm ->
@@ -68,6 +70,7 @@ class UserSearchPresenter @Inject constructor(
     }
 
     override fun onQueryTextChange(searchTerm: String) {
+        Timber.d("searchTerm - ${searchTerm}")
         searchFlow.tryEmit(searchTerm)
     }
 }
