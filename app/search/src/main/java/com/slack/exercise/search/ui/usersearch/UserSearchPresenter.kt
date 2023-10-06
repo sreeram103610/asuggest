@@ -57,8 +57,7 @@ class UserSearchPresenter @Inject constructor(
             is DomainResult.Loaded -> this@UserSearchPresenter.view?.onUserSearchResults(
                 result.data
             )
-
-            DomainResult.Loading -> this@UserSearchPresenter.view?.onUserSearchLoading()
+            is DomainResult.Loading -> this@UserSearchPresenter.view?.onUserSearchLoading()
         }
     }
 

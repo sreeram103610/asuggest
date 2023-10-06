@@ -12,4 +12,5 @@
     <dimen name="fontsize">16sp</dimen>
     <dimen name="lineheight">12sp</dimen>
     <dimen name="divider_size">0.5dp</dimen>
+    <dimen name="progressbar_size">48dp</dimen>
 </resources>

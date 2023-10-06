@@ -3,6 +3,8 @@ package com.slack.exercise.search.data.api
 import com.slack.exercise.search.data.model.DataResult
 import com.slack.exercise.search.data.model.ErrorResponse
 import com.slack.exercise.search.data.model.UserDto
+import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -22,12 +24,17 @@ internal class DefaultSlackSearchClient @Inject constructor(val service: SlackSe
      * or an [ErrorResponse] if there's an error during the search.
      */
     override suspend fun searchUsers(searchTerm: String): DataResult<List<UserDto>, ErrorResponse> {
-        return service.searchUsers(searchTerm).let {
-            if (it.isSuccessful) {
-                DataResult.Success(it.body()?.userDtos ?: emptyList())
-            } else {
-                DataResult.Error(ErrorResponse.ServerError)
+        return try {
+            service.searchUsers(searchTerm).let {
+                if (it.isSuccessful) {
+                    DataResult.Success(it.body()?.userDtos ?: emptyList())
+                } else {
+                    DataResult.Error(ErrorResponse.ServerError)
+                }
             }
+        } catch (e: Exception) {
+            Timber.e("Network Error. ${e.message}")
+            DataResult.Error(ErrorResponse.ServerError)
         }
     }
 }
