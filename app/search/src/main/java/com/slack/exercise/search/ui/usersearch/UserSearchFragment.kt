@@ -93,6 +93,7 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
     }
 
     override fun onUserSearchResults(results: List<UserSearchResult>) {
+        userSearchBinding.progressBar.hide()
         userSearchBinding.userSearchResultList.visibility = View.VISIBLE
 
         val adapter = userSearchBinding.userSearchResultList.adapter as UserSearchAdapter
@@ -100,7 +101,13 @@ class UserSearchFragment : DaggerFragment(), UserSearchContract.View {
         userSearchBinding.userSearchResultList.scrollToPosition(0)
     }
 
+    override fun onUserSearchLoading() {
+        userSearchBinding.progressBar.show()
+        userSearchBinding.userSearchResultList.visibility = View.GONE
+    }
+
     override fun onUserSearchError(error: String) {
+        userSearchBinding.progressBar.hide()
         userSearchBinding.userSearchResultList.visibility = View.GONE
         Timber.e("Error searching users.")
     }
